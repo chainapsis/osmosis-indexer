@@ -31,7 +31,7 @@ func (suite *TreeTestSuite) SetupTest() {
 	_, _, err = tree.SaveVersion()
 	suite.Require().Nil(err)
 	kvstore := iavlstore.UnsafeNewStore(tree)
-	suite.tree = sumtree.NewTree(kvstore, 10)
+	suite.tree = sumtree.NewTree(kvstore, 3)
 }
 
 func TestTreeTestSuite(t *testing.T) {
