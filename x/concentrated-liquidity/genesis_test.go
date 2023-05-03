@@ -188,18 +188,14 @@ func (s *KeeperTestSuite) TestInitGenesis() {
 					},
 					positionData: []genesis.PositionData{
 						{
-							LockId:   1,
-							Position: &testPositionModel,
-							IncentiveAccumRecord: []accum.Record{
-								testUptimeAccumRecord,
-							},
+							LockId:               1,
+							Position:             &testPositionModel,
+							IncentiveAccumRecord: []accum.Record{testUptimeAccumRecord},
 						},
 						{
-							LockId:   0,
-							Position: withPositionId(testPositionModel, 2),
-							IncentiveAccumRecord: []accum.Record{
-								testUptimeAccumRecord,
-							},
+							LockId:               0,
+							Position:             withPositionId(testPositionModel, 2),
+							IncentiveAccumRecord: []accum.Record{testUptimeAccumRecord},
 						},
 					},
 					feeAccumValues: genesis.AccumObject{
@@ -247,18 +243,14 @@ func (s *KeeperTestSuite) TestInitGenesis() {
 			},
 			expectedPositionData: []genesis.PositionData{
 				{
-					LockId:   1,
-					Position: &testPositionModel,
-					IncentiveAccumRecord: []accum.Record{
-						testUptimeAccumRecord,
-					},
+					LockId:               1,
+					Position:             &testPositionModel,
+					IncentiveAccumRecord: []accum.Record{testUptimeAccumRecord},
 				},
 				{
-					LockId:   0,
-					Position: withPositionId(testPositionModel, 2),
-					IncentiveAccumRecord: []accum.Record{
-						testUptimeAccumRecord,
-					},
+					LockId:               0,
+					Position:             withPositionId(testPositionModel, 2),
+					IncentiveAccumRecord: []accum.Record{testUptimeAccumRecord},
 				},
 			},
 			expectedfeeAccumValues: []genesis.AccumObject{
@@ -305,11 +297,9 @@ func (s *KeeperTestSuite) TestInitGenesis() {
 					},
 					positionData: []genesis.PositionData{
 						{
-							LockId:   1,
-							Position: &testPositionModel,
-							IncentiveAccumRecord: []accum.Record{
-								testUptimeAccumRecord,
-							},
+							LockId:               1,
+							Position:             &testPositionModel,
+							IncentiveAccumRecord: []accum.Record{testUptimeAccumRecord},
 						},
 					},
 					feeAccumValues: genesis.AccumObject{
@@ -342,11 +332,9 @@ func (s *KeeperTestSuite) TestInitGenesis() {
 					},
 					positionData: []genesis.PositionData{
 						{
-							LockId:   2,
-							Position: withPositionId(*positionWithPoolId(testPositionModel, 2), DefaultPositionId+1),
-							IncentiveAccumRecord: []accum.Record{
-								testUptimeAccumRecord,
-							},
+							LockId:               2,
+							Position:             withPositionId(*positionWithPoolId(testPositionModel, 2), DefaultPositionId+1),
+							IncentiveAccumRecord: []accum.Record{testUptimeAccumRecord},
 						},
 					},
 
@@ -428,18 +416,14 @@ func (s *KeeperTestSuite) TestInitGenesis() {
 			},
 			expectedPositionData: []genesis.PositionData{
 				{
-					LockId:   1,
-					Position: &testPositionModel,
-					IncentiveAccumRecord: []accum.Record{
-						testUptimeAccumRecord,
-					},
+					LockId:               1,
+					Position:             &testPositionModel,
+					IncentiveAccumRecord: []accum.Record{testUptimeAccumRecord},
 				},
 				{
-					LockId:   2,
-					Position: withPositionId(*positionWithPoolId(testPositionModel, 2), DefaultPositionId+1),
-					IncentiveAccumRecord: []accum.Record{
-						testUptimeAccumRecord,
-					},
+					LockId:               2,
+					Position:             withPositionId(*positionWithPoolId(testPositionModel, 2), DefaultPositionId+1),
+					IncentiveAccumRecord: []accum.Record{testUptimeAccumRecord},
 				},
 			},
 		},
@@ -509,6 +493,7 @@ func (s *KeeperTestSuite) TestInitGenesis() {
 			// get all positions.
 			s.Require().NoError(err)
 			var actualPositionData []genesis.PositionData
+
 			for _, positionDataEntry := range tc.expectedPositionData {
 				getPosition, err := clKeeper.GetPosition(ctx, positionDataEntry.Position.PositionId)
 				s.Require().NoError(err)
@@ -523,9 +508,28 @@ func (s *KeeperTestSuite) TestInitGenesis() {
 					s.Require().ErrorIs(err, types.PositionIdToLockNotFoundError{PositionId: positionDataEntry.Position.PositionId})
 				}
 
+				uptimeAccumObjects, err := clKeeper.GetUptimeAccumulators(s.Ctx, positionDataEntry.Position.PoolId)
+				if err != nil {
+					panic(err)
+				}
+
+				var incAccumRecord []accum.Record
+				positionName := string(types.KeyPositionId(positionDataEntry.Position.PositionId))
+				for uptimeIndex := range types.SupportedUptimes {
+					curUptimeAccum := uptimeAccumObjects[uptimeIndex]
+					val, err := curUptimeAccum.GetPosition(positionName)
+					if err != nil {
+						panic(err)
+					}
+
+					incAccumRecord = append(incAccumRecord, val)
+
+				}
+
 				actualPositionData = append(actualPositionData, genesis.PositionData{
-					LockId:   actualLockId,
-					Position: &getPosition,
+					LockId:               actualLockId,
+					Position:             &getPosition,
+					IncentiveAccumRecord: incAccumRecord,
 				})
 			}
 
@@ -590,11 +594,9 @@ func (s *KeeperTestSuite) TestExportGenesis() {
 					},
 					positionData: []genesis.PositionData{
 						{
-							LockId:   1,
-							Position: &testPositionModel,
-							IncentiveAccumRecord: []accum.Record{
-								testUptimeAccumRecord,
-							},
+							LockId:               1,
+							Position:             &testPositionModel,
+							IncentiveAccumRecord: []accum.Record{testUptimeAccumRecord},
 						},
 					},
 					feeAccumValues: genesis.AccumObject{
@@ -642,18 +644,14 @@ func (s *KeeperTestSuite) TestExportGenesis() {
 					},
 					positionData: []genesis.PositionData{
 						{
-							LockId:   1,
-							Position: &testPositionModel,
-							IncentiveAccumRecord: []accum.Record{
-								testUptimeAccumRecord,
-							},
+							LockId:               1,
+							Position:             &testPositionModel,
+							IncentiveAccumRecord: []accum.Record{testUptimeAccumRecord},
 						},
 						{
-							LockId:   0,
-							Position: withPositionId(testPositionModel, DefaultPositionId+1),
-							IncentiveAccumRecord: []accum.Record{
-								testUptimeAccumRecord,
-							},
+							LockId:               0,
+							Position:             withPositionId(testPositionModel, DefaultPositionId+1),
+							IncentiveAccumRecord: []accum.Record{testUptimeAccumRecord},
 						},
 					},
 					feeAccumValues: genesis.AccumObject{
@@ -707,11 +705,9 @@ func (s *KeeperTestSuite) TestExportGenesis() {
 					},
 					positionData: []genesis.PositionData{
 						{
-							LockId:   2,
-							Position: withPositionId(*positionWithPoolId(testPositionModel, 2), DefaultPositionId+2),
-							IncentiveAccumRecord: []accum.Record{
-								testUptimeAccumRecord,
-							},
+							LockId:               2,
+							Position:             withPositionId(*positionWithPoolId(testPositionModel, 2), DefaultPositionId+2),
+							IncentiveAccumRecord: []accum.Record{testUptimeAccumRecord},
 						},
 					},
 				},

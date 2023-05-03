@@ -75,17 +75,11 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState genesis.GenesisState) {
 		if err != nil {
 			panic(err)
 		}
-		positionName := string(types.KeyPositionId(positionWrapper.Position.PositionId))
 
-		// initialize accum for all uptime
-		for uptimeIndex := range types.SupportedUptimes {
-			curUptimeAccum := uptimeAccumObjects[uptimeIndex]
-
-			for _, incentiveAccumRecord := range positionWrapper.IncentiveAccumRecord {
-				err := curUptimeAccum.NewPositionCustomAcc(positionName, incentiveAccumRecord.NumShares, incentiveAccumRecord.InitAccumValue, incentiveAccumRecord.Options)
-				if err != nil {
-					panic(err)
-				}
+		positionNameKey := string(types.KeyPositionId(positionWrapper.Position.PositionId))
+		for _, incentiveRecords := range positionWrapper.IncentiveAccumRecord {
+			for _, uptimeAccum := range uptimeAccumObjects {
+				accum.InitOrUpdatePosition(uptimeAccum, incentiveRecords.InitAccumValue, positionNameKey, incentiveRecords.NumShares, incentiveRecords.UnclaimedRewards, incentiveRecords.Options)
 			}
 		}
 	}
@@ -188,26 +182,28 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *genesis.GenesisState {
 		}
 
 		// Retrieve fee accumulator state for position
+		positionNameKey := string(types.KeyPositionId(position.PositionId))
 		uptimeAccumObjects, err := k.GetUptimeAccumulators(ctx, position.PoolId)
 		if err != nil {
 			panic(err)
 		}
-		positionIncentivesAccumObject := make([]accum.Record, len(uptimeAccumObjects))
-		positionName := string(types.KeyPositionId(position.GetPositionId()))
-		for uptimeIndex := range types.SupportedUptimes {
-			curUptimeAccum := uptimeAccumObjects[uptimeIndex]
-			incAccumRecord, err := curUptimeAccum.GetPosition(positionName)
+
+		uptimeAccums := make([]accum.Record, 0, len(uptimeAccumObjects))
+		for _, uptimeAccum := range uptimeAccumObjects {
+			uptimeAccumRecord, err := uptimeAccum.GetPosition(positionNameKey)
 			if err != nil {
 				panic(err)
 			}
-			positionIncentivesAccumObject = append(positionIncentivesAccumObject, incAccumRecord)
+
+			uptimeAccums = append(uptimeAccums, uptimeAccumRecord)
 		}
 
 		positionData = append(positionData, genesis.PositionData{
 			LockId:               lockId,
 			Position:             &position,
-			IncentiveAccumRecord: positionIncentivesAccumObject,
+			IncentiveAccumRecord: uptimeAccums,
 		})
+
 	}
 
 	return &genesis.GenesisState{
