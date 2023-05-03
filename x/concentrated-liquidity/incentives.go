@@ -17,15 +17,11 @@ import (
 // createUptimeAccumulators creates accumulator objects in store for each supported uptime for the given poolId.
 // The accumulators are initialized with the default (zero) values.
 func (k Keeper) createUptimeAccumulators(ctx sdk.Context, poolId uint64) error {
-	// ? why dont we loop through authorized uptime instead of supported uptimes
-	// ? doing so we wont have to add break
 	for uptimeIndex := range types.SupportedUptimes {
 		err := accum.MakeAccumulator(ctx.KVStore(k.storeKey), types.KeyUptimeAccumulator(poolId, uint64(uptimeIndex)))
 		if err != nil {
 			return err
 		}
-
-		// ? since we're only using 1ns uptime do we want to break here?
 	}
 
 	return nil
@@ -53,14 +49,11 @@ func (k Keeper) GetUptimeAccumulators(ctx sdk.Context, poolId uint64) ([]accum.A
 		}
 
 		accums[uptimeIndex] = acc
-		// ? since we're only using 1ns uptime do we want to break here?
 	}
 
 	return accums, nil
 }
 
-// ? why is linter disabled for most of the functions?
-// nolint: unused
 // getUptimeAccumulatorValues gets the accumulator values for the supported uptimes for the given poolId
 // Returns error if accumulator for the given poolId does not exist.
 func (k Keeper) getUptimeAccumulatorValues(ctx sdk.Context, poolId uint64) ([]sdk.DecCoins, error) {
@@ -77,7 +70,6 @@ func (k Keeper) getUptimeAccumulatorValues(ctx sdk.Context, poolId uint64) ([]sd
 	return uptimeValues, nil
 }
 
-// nolint: unused
 // getInitialUptimeGrowthOutsidesForTick returns an array of the initial values of uptime growth outside
 // for each supported uptime for a given tick. This value depends on the tick's location relative to the current tick.
 //
@@ -112,7 +104,6 @@ func (k Keeper) getInitialUptimeGrowthOutsidesForTick(ctx sdk.Context, poolId ui
 	return emptyUptimeValues, nil
 }
 
-// nolint: unused
 // prepareBalancerPoolAsFullRange find the canonical Balancer pool that corresponds to the given CL poolId and,
 // if it exists, adds the number of full range shares it qualifies for to the CL pool uptime accumulators.
 // This is functionally equivalent to treating the Balancer pool shares as a single full range position on the CL pool,
@@ -209,7 +200,6 @@ func (k Keeper) prepareBalancerPoolAsFullRange(ctx sdk.Context, clPoolId uint64)
 	return canonicalBalancerPoolId, qualifyingFullRangeShares, nil
 }
 
-// nolint: unused
 // claimAndResetFullRangeBalancerPool claims rewards for the "full range" shares corresponding to the given Balancer pool, and
 // then deletes the record from the uptime accumulators. It adds the claimed rewards to the gauge corresponding to the longest duration
 // lock on the Balancer pool. Importantly, this is a dynamic check such that if a longer duration lock is added in the future, it will
@@ -400,7 +390,6 @@ func (k Keeper) updateUptimeAccumulatorsToNow(ctx sdk.Context, poolId uint64) er
 	return nil
 }
 
-// nolint: unused
 // calcAccruedIncentivesForAccum calculates IncentivesPerLiquidity to be added to an accum
 // Returns the IncentivesPerLiquidity value and an updated list of IncentiveRecords that
 // reflect emitted incentives
@@ -460,7 +449,6 @@ func findUptimeIndex(uptime time.Duration) (int, error) {
 	return index, nil
 }
 
-// nolint: unused
 // setIncentiveRecords sets the passed in incentive records in state
 // Errors if the incentive record has an unsupported min uptime.
 func (k Keeper) setIncentiveRecord(ctx sdk.Context, incentiveRecord types.IncentiveRecord) error {
@@ -739,6 +727,12 @@ func (k Keeper) claimAllIncentivesForPosition(ctx sdk.Context, positionId uint64
 		return sdk.Coins{}, sdk.Coins{}, err
 	}
 
+	// Sync global uptime accumulators to current blocktime to ensure consistency in reward collection
+	err = k.updateUptimeAccumulatorsToNow(ctx, position.GetPoolId())
+	if err != nil {
+		return sdk.Coins{}, sdk.Coins{}, err
+	}
+
 	// Compute the age of the position.
 	positionAge := ctx.BlockTime().Sub(position.JoinTime)
 	if positionAge < 0 {
@@ -793,7 +787,6 @@ func (k Keeper) claimAllIncentivesForPosition(ctx sdk.Context, positionId uint64
 
 			collectedIncentivesForPosition = collectedIncentivesForPosition.Add(collectedIncentivesForUptime...)
 		}
-		// ? can we break here because uptimeAccumulator only supports 1ns
 	}
 
 	return collectedIncentivesForPosition, forfeitedIncentivesForPosition, nil

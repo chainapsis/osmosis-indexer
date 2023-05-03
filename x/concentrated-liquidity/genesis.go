@@ -69,6 +69,22 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState genesis.GenesisState) {
 		if err != nil {
 			panic(err)
 		}
+
+		// set individual fee accumulator state position
+		uptimeAccumObjects, err := k.GetUptimeAccumulators(ctx, positionWrapper.Position.PoolId)
+		if err != nil {
+			panic(err)
+		}
+		positionName := string(types.KeyPositionId(positionWrapper.Position.PositionId))
+
+		// initialize accum for all uptime
+		for uptimeIndex := range types.SupportedUptimes {
+			curUptimeAccum := uptimeAccumObjects[uptimeIndex]
+
+			for _, incentiveAccumRecord := range positionWrapper.IncentiveAccumRecord {
+				curUptimeAccum.NewPositionCustomAcc(positionName, incentiveAccumRecord.NumShares, incentiveAccumRecord.InitAccumValue, incentiveAccumRecord.Options)
+			}
+		}
 	}
 }
 
@@ -168,9 +184,26 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *genesis.GenesisState {
 			}
 		}
 
+		// Retrieve fee accumulator state for position
+		uptimeAccumObjects, err := k.GetUptimeAccumulators(ctx, position.PoolId)
+		if err != nil {
+			panic(err)
+		}
+		positionIncentivesAccumObject := make([]accum.Record, len(uptimeAccumObjects))
+		positionName := string(types.KeyPositionId(position.GetPositionId()))
+		for uptimeIndex := range types.SupportedUptimes {
+			curUptimeAccum := uptimeAccumObjects[uptimeIndex]
+			incAccumRecord, err := curUptimeAccum.GetPosition(positionName)
+			if err != nil {
+				panic(err)
+			}
+			positionIncentivesAccumObject = append(positionIncentivesAccumObject, incAccumRecord)
+		}
+
 		positionData = append(positionData, genesis.PositionData{
-			LockId:   lockId,
-			Position: &position,
+			LockId:               lockId,
+			Position:             &position,
+			IncentiveAccumRecord: positionIncentivesAccumObject,
 		})
 	}
 
