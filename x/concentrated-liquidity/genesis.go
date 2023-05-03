@@ -70,7 +70,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState genesis.GenesisState) {
 			panic(err)
 		}
 
-		// set individual fee accumulator state position
+		// set individual uptime accumulator state position
 		uptimeAccumObjects, err := k.GetUptimeAccumulators(ctx, positionWrapper.Position.PoolId)
 		if err != nil {
 			panic(err)
@@ -82,7 +82,10 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState genesis.GenesisState) {
 			curUptimeAccum := uptimeAccumObjects[uptimeIndex]
 
 			for _, incentiveAccumRecord := range positionWrapper.IncentiveAccumRecord {
-				curUptimeAccum.NewPositionCustomAcc(positionName, incentiveAccumRecord.NumShares, incentiveAccumRecord.InitAccumValue, incentiveAccumRecord.Options)
+				err := curUptimeAccum.NewPositionCustomAcc(positionName, incentiveAccumRecord.NumShares, incentiveAccumRecord.InitAccumValue, incentiveAccumRecord.Options)
+				if err != nil {
+					panic(err)
+				}
 			}
 		}
 	}
