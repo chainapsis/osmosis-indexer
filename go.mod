@@ -226,7 +226,7 @@ require (
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gofrs/flock v0.8.1 // indirect
-	github.com/gogo/protobuf v1.3.3 // indirect
+	github.com/gogo/protobuf v1.3.3
 	github.com/golang/glog v1.1.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/snappy v0.0.4 // indirect
@@ -375,9 +375,12 @@ require (
 )
 
 replace (
+
 	// adds expedited proposal support and 1000MB cache default
 	// https://github.com/osmosis-labs/wasmd/releases/tag/v0.45.0-osmo
 	github.com/CosmWasm/wasmd => github.com/osmosis-labs/wasmd v0.45.0-osmo
+	// customized cometbft For osmosis indexer
+	github.com/cometbft/cometbft => github.com/chainapsis/cometbft v0.37.2-querier
 
 	// v1.0.0-beta.3 is incompatible, so we use v1.0.0-beta.2
 	github.com/cosmos/cosmos-proto => github.com/cosmos/cosmos-proto v1.0.0-beta.2

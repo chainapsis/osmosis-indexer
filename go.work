@@ -13,3 +13,5 @@ use ./tests/cl-genesis-positions
 use .
 
 use ./x/epochs
+
+replace github.com/cometbft/cometbft => github.com/chainapsis/cometbft v0.37.2-querier

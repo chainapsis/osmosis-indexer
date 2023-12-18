@@ -694,6 +694,8 @@ github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XL
 github.com/cespare/xxhash/v2 v2.1.2/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/cespare/xxhash/v2 v2.2.0 h1:DC2CZ1Ep5Y4k3ZQ899DldepgrayRUGE6BBZ/cd9Cj44=
 github.com/cespare/xxhash/v2 v2.2.0/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
+github.com/chainapsis/cometbft v0.37.2-querier h1:dcI8mLj3dsZnIotz+IXXKEX19Kssa+siAIBcr+jYbug=
+github.com/chainapsis/cometbft v0.37.2-querier/go.mod h1:Y2MMMN//O5K4YKd8ze4r9jmk4Y7h0ajqILXbH5JQFVs=
 github.com/charithe/durationcheck v0.0.10 h1:wgw73BiocdBDQPik+zcEoBG/ob8uyBHf2iyoHGPf5w4=
 github.com/charithe/durationcheck v0.0.10/go.mod h1:bCWXb7gYRysD1CU3C+u4ceO49LoGOY1C1L6uouGNreQ=
 github.com/chavacava/garif v0.0.0-20230227094218-b8c73b2037b8 h1:W9o46d2kbNL06lq7UNDPV0zYLzkrde/bjIqO02eoll0=
@@ -739,8 +741,6 @@ github.com/cockroachdb/redact v1.1.5/go.mod h1:BVNblN9mBWFyMyqK1k3AAiSxhvhfK2oOZ
 github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd/go.mod h1:sE/e/2PUdi/liOCUjSTXgM1o87ZssimdTWN964YiIeI=
 github.com/coinbase/rosetta-sdk-go/types v1.0.0 h1:jpVIwLcPoOeCR6o1tU+Xv7r5bMONNbHU7MuEHboiFuA=
 github.com/coinbase/rosetta-sdk-go/types v1.0.0/go.mod h1:eq7W2TMRH22GTW0N0beDnN931DW0/WOI1R2sdHNHG4c=
-github.com/cometbft/cometbft v0.37.2 h1:XB0yyHGT0lwmJlFmM4+rsRnczPlHoAKFX6K8Zgc2/Jc=
-github.com/cometbft/cometbft v0.37.2/go.mod h1:Y2MMMN//O5K4YKd8ze4r9jmk4Y7h0ajqILXbH5JQFVs=
 github.com/cometbft/cometbft-db v0.8.0 h1:vUMDaH3ApkX8m0KZvOFFy9b5DZHBAjsnEuo9AKVZpjo=
 github.com/cometbft/cometbft-db v0.8.0/go.mod h1:6ASCP4pfhmrCBpfk01/9E1SI29nD3HfVHrY4PG8x5c0=
 github.com/confio/ics23/go v0.9.1 h1:3MV46eeWwO3xCauKyAtuAdJYMyPnnchW4iLr2bTw6/U=
