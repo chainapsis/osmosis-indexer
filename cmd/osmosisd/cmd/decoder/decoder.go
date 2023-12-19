@@ -7,7 +7,7 @@ import (
 	"net"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/gogo/protobuf/jsonpb"
+	"github.com/cosmos/gogoproto/jsonpb"
 	"google.golang.org/grpc"
 
 	"github.com/osmosis-labs/osmosis/v21/app/params"
