@@ -380,7 +380,7 @@ replace (
 	// https://github.com/osmosis-labs/wasmd/releases/tag/v0.45.0-osmo
 	github.com/CosmWasm/wasmd => github.com/osmosis-labs/wasmd v0.45.0-osmo
 	// customized cometbft For osmosis indexer
-	github.com/cometbft/cometbft => github.com/chainapsis/cometbft v0.37.2-querier
+	github.com/cometbft/cometbft => github.com/chainapsis/cometbft v0.37.2-querier-wip-1
 
 	// v1.0.0-beta.3 is incompatible, so we use v1.0.0-beta.2
 	github.com/cosmos/cosmos-proto => github.com/cosmos/cosmos-proto v1.0.0-beta.2
