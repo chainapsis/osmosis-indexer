@@ -11,3 +11,5 @@ use ./x/ibc-hooks
 use ./x/epochs
 
 replace github.com/onsi/ginkgo => github.com/onsi/ginkgo v1.16.5
+
+replace github.com/cometbft/cometbft => github.com/lkh1434/osmosis-labs-cometbft v0.37.4-v23-osmo-1-querier
